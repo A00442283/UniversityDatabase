@@ -1,5 +1,35 @@
 $(document).ready(function () {
     $("#save").click(function () {
+        validation();
+    })
+
+    $("#delete").click(function () {
+        validation();
+    })
+
+    $("search").click(function () {
+        var name = $("#universityName").val();
+
+         //Required
+         if(name.length == "")
+         {
+             $("#universitySearchHelp").text("Please enter University name !");
+             $("#universitySearch").focus();
+             return false;
+         }
+ 
+         //Non Numeric charecters accepeted for University Name 
+         if(!nonNumeric.test(name))
+         {
+             $("#universitySearchHelp").text("Please enter charecters for University name !");
+             $("#universitySearch").focus();
+             return false;
+         }
+
+    })
+
+    function validation(){
+
         var name = $("#universityName").val();
         var ph = $("#phoneNumber").val();
         var address = $("#address").val();
@@ -45,5 +75,5 @@ $(document).ready(function () {
             return false;
         }
 
-    })
+    }
 });
