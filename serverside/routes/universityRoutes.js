@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const University = require('../models/university')
 
-router.get('/getUniversities',async(req,res)=>{
+router.get('/universitites',async(req,res)=>{
 
     try{
         const universities = await University.find()
@@ -14,10 +14,10 @@ router.get('/getUniversities',async(req,res)=>{
     
 })
 
-router.post('/getUniversity/:id',async function (req,res){
+router.post('/getUniversity',async function (req,res){
     
     try{
-        const response = await university.findById(req.params.id)
+        const response = await university.find({"name":req.body.name})
         res.json(response)
     }
     catch(err){
@@ -25,7 +25,7 @@ router.post('/getUniversity/:id',async function (req,res){
     }
 } )
 
-router.post('/addUniversity',async function (req,res){
+router.post('/',async function (req,res){
     const university = new University({
         name:req.body.name,
         address:req.body.address,
@@ -39,6 +39,6 @@ router.post('/addUniversity',async function (req,res){
     catch(err){
         res.send('Error - '+ err)
     }
-} )
+})
 
 module.exports = router
