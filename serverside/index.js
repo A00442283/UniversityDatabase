@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 var mongoUrl = "mongodb://m_kuzhippallil:A00442283@localhost:/m_kuzhippallil";
 const University = require('../serverside/models/university')
 
+
 mongoose.set('useFindAndModify', false);
 
 const app = express();
@@ -18,14 +19,28 @@ var allowCrossDomain = function(req,res,next){
 app.listen(SERVER_PORT,function(){
     console.log('Server Started');
 });
+
+app.use(express.urlencoded({ extended: false }))
 app.use(express.json());
 
+//app.set('views', path.join(__dirname, 'cside'));  // add this one, change 'views' for your folder name if needed.
+app.engine('html', require('ejs').renderFile);
+app.set('views', __dirname + '/clientside');
 
-app.get('/',async(req,res)=>{
+app.use('/', express.static(__dirname));
+
+app.get('/',async function(req,res){
+    res.render('main.html')
+})
+
+app.get('/getUniversities',async(req,res)=>{
 
     try{
         const universities = await University.find()
+        console.log("GET UNIVERSITIES")
+        console.log(universities)
         res.json(universities)
+        //return res.render('main.html',{ data: universities })
     }
     catch(err){
         res.send('Error - '+err)
@@ -34,7 +49,7 @@ app.get('/',async(req,res)=>{
 })
 
 app.post('/getUniversity',async function (req,res){
-    
+    console.log("GET UNIVERSITY")
     console.log(req.body.name)
     try{
         const response = await University.find({ 'name' : { '$regex' : req.body.name, '$options' : 'i' } })
@@ -46,15 +61,20 @@ app.post('/getUniversity',async function (req,res){
 } )
 
 app.post('/',async function (req,res){
+    console.log("POST REQUEST CALLED SERVER SIDE")
+    console.log(req.body)
     const university = new University({
         name:req.body.name,
         address:req.body.address,
         phone:req.body.phone
     })
 
+    console.log(university)
+
     try{
         const response = await university.save()
-        res.json(response)
+        console.log(response)
+        return res.render('main.html',response)
     }
     catch(err){
         res.send('Error - '+ err)
@@ -69,6 +89,7 @@ app.post('/deleteUniversity',async function(req,res){
                 res.send('Error - '+ err)
             }
             else{
+            
             res.json(response)
 }
 });

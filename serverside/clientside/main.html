@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University App</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
+
+</head>
+
+<body>
+
+    <nav class="navbar text-white bg-info">
+        <div class="mx-auto">
+            University Database
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <form id="saveUniversity" onSubmit="return false">
+            <div class="form-group">
+                <label for="universityName">Name</label>
+                <input type="text" class="form-control" id="universityName" aria-describedby="emailHelp"
+                    placeholder="Enter name of university">
+                <small id="universityNameHelp" class="text-danger"></small>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">Address</label>
+                <input type="text" class="form-control" id="address" placeholder="Enter address">
+                <small id="addressHelp" class="text-danger"></small>
+            </div>
+
+            <div class="form-group">
+                <label for="phoneNumber">Phone Number</label>
+                <input type="text" class="form-control" id="phoneNumber" placeholder="Enter phone number">
+                <small id="phoneNumberHelp" class="text-danger"></small>
+            </div>
+
+            <div class="btn-group" style="width:100%">
+                <input type="submit" id="save" class="btn btn-success" value="save" />
+            </div>
+
+        </form>
+
+
+        <form class="mt-5" onSubmit="return false">
+            <div class="form-group">
+                <label for="universitySearch">Name</label>
+                <input type="text" class="form-control" id="universitySearch" aria-describedby="emailHelp"
+                    placeholder="Enter name of university" >
+                <small id="universitySearchHelp" class="form-text text-muted"></small>
+            </div>
+            <div class="btn-group" style="width:100%">
+                <input id="search" type="submit" class="btn btn-success" value="Search" />
+                <input type="submit" id="delete" class="btn btn-danger ml-2" value="delete" />
+            </div>
+        </form>
+        <div class="table_records">
+            <table class="table table-hover table-light col-12">
+                <thead>
+                    <tr>
+                        <td>Name</td>
+                        <td>Address</td>
+                        <td>Phone</td>
+                    </tr>
+                </thead>
+                <tbody id="tableSearch">
+
+                </tbody>
+
+            </table>
+        </div>
+
+        <form class="mt-5" onSubmit="return false">
+
+            <div class="btn-group" style="width:100%">
+                <input id="displayRecords" type="submit" class="btn btn-primary" value="Display Records">
+            </div>
+        </form>
+
+        <div class="table_records">
+            <table class="table table-hover table-light col-12">
+                <thead>
+                    <tr>
+                        <td>Name</td>
+                        <td>Address</td>
+                        <td>Phone</td>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+    <div class="mb-5">
+
+    </div>
+
+    <footer class="navbar fixed-bottom text-white bg-info">
+        <div class="mx-auto">
+            Developed by Maria Alex
+        </div>
+    </footer>
+
+    <script>
+        $(document).ready(function () {
+
+            const SERVER_URL = "http://dev.cs.smu.ca:8136"
+            var data = []
+
+            $("#save").click(function () {
+                validation();
+                var obj = {
+                    "name": $("#universityName").val(),
+                    "phone": $("#phoneNumber").val(),
+                    "address": $("#address").val()
+                }
+
+
+                $.post({
+                    traditional: true,
+                    url: 'http://dev.cs.smu.ca:8136/',
+                    contentType: 'application/json',
+                    data: JSON.stringify(obj),
+                    dataType: 'json',
+                    success: function (response) { alert("Successfully ad") }
+                });
+
+            });
+
+            $("#displayRecords").click(function () {
+
+                $.getJSON({
+                    url: 'http://dev.cs.smu.ca:8136/getUniversities',
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    success: function (response) {
+                        data = response
+                        var tr = [];
+                        console.log(data)
+                        for (var i = 0; i < data.length; i++) {
+                            tr.push('<tr>');
+                            tr.push("<td>" + data[i].name + "</td>");
+                            tr.push("<td>" + data[i].address + "</td>");
+                            tr.push("<td>" + data[i].phone + "</td>");
+                            tr.push('</tr>');
+                        }
+                        $('#tableBody').empty();
+                        $('#tableBody').append($(tr.join('')));
+
+                    }
+                });
+
+
+
+
+            })
+
+            $("#delete").click(function () {
+                console.log("DELETE clicked")
+                var name = $("#universitySearch").val();
+                var nonNumeric = new RegExp('[^0-9]+$')
+
+                //Required
+                if (name.length == "") {
+                    $("#universitySearchHelp").text("Please enter University name !");
+                    $("#universitySearch").focus();
+                    return false;
+                }
+
+                //Non Numeric charecters accepeted for University Name 
+                if (!nonNumeric.test(name)) {
+                    $("#universitySearchHelp").text("Please enter charecters for University name !");
+                    $("#universitySearch").focus();
+                    return false;
+                }
+
+                console.log(name)
+
+                var obj = {
+                    "name": name
+                }
+
+                $.post({
+                    url: 'http://dev.cs.smu.ca:8136/deleteUniversity',
+                    contentType: 'application/json',
+                    data: JSON.stringify(obj),
+                    dataType: 'json',
+                    success: function (response) {
+                       alert("Deleted - "+response)
+                    }
+                });
+            })
+
+            $("#search").click(function () {
+                console.log("SEARCH cliecked")
+                var name = $("#universitySearch").val();
+                var nonNumeric = new RegExp('[^0-9]+$')
+
+                //Required
+                if (name.length == "") {
+                    $("#universitySearchHelp").text("Please enter University name !");
+                    $("#universitySearch").focus();
+                    return false;
+                }
+
+                //Non Numeric charecters accepeted for University Name 
+                if (!nonNumeric.test(name)) {
+                    $("#universitySearchHelp").text("Please enter charecters for University name !");
+                    $("#universitySearch").focus();
+                    return false;
+                }
+
+                console.log(name)
+
+                var obj = {
+                    "name": name
+                }
+
+                $.post({
+                    url: 'http://dev.cs.smu.ca:8136/getUniversity',
+                    contentType: 'application/json',
+                    data: JSON.stringify(obj),
+                    dataType: 'json',
+                    success: function (response) {
+                        data = response
+                        var tr = [];
+                        console.log(data)
+                        for (var i = 0; i < data.length; i++) {
+                            tr.push('<tr>');
+                            tr.push("<td>" + data[i].name + "</td>");
+                            tr.push("<td>" + data[i].address + "</td>");
+                            tr.push("<td>" + data[i].phone + "</td>");
+                            tr.push('</tr>');
+                        }
+                        $('#tableSearch').empty();
+                        $('#tableSearch').append($(tr.join('')));
+
+                    }
+                });
+
+            })
+
+            function validation() {
+
+                var name = $("#universityName").val();
+                var ph = $("#phoneNumber").val();
+                var address = $("#address").val();
+                var nonNumeric = new RegExp('[^0-9]+$')
+                var phoneRegex = new RegExp('^[0-9]{10}$');
+
+                //Required
+                if (name.length == "") {
+                    $("#universityNameHelp").text("Please enter University name !");
+                    $("#universityName").focus();
+                    return false;
+                }
+
+                //Non Numeric charecters accepeted for University Name 
+                if (!nonNumeric.test(name)) {
+                    $("#universityNameHelp").text("Please enter charecters for University name !");
+                    $("#universityName").focus();
+                    return false;
+                }
+
+                //Required
+                if (address.length == "") {
+                    $("#addressHelp").text("Please enter Address !");
+                    $("#address").focus();
+                    return false;
+                }
+
+                //Required
+                if (ph.length == "") {
+                    $("#phoneNumberHelp").text("Please enter Phone number !");
+                    $("#phoneNumber").focus();
+                    return false;
+                }
+
+                if (!phoneRegex.test(ph)) {
+                    $("#phoneNumberHelp").text("Please enter a 10 digit Phone number !");
+                    $("#phoneNumber").focus();
+                    return false;
+                }
+
+            }
+        });
+    </script>
+
+
+</body>
+
+</html>
