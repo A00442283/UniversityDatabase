@@ -137,8 +137,13 @@
                     contentType: 'application/json',
                     data: JSON.stringify(obj),
                     dataType: 'json',
-                    success: function (response) { alert("Successfully ad") }
+                    success: function (response) { alert("Successfully added!") }
                 });
+
+                $("#universityName").val('')
+                $("#phoneNumber").val('')
+                $("#address").val('')
+
 
             });
 
@@ -164,9 +169,6 @@
 
                     }
                 });
-
-
-
 
             })
 
@@ -201,9 +203,17 @@
                     data: JSON.stringify(obj),
                     dataType: 'json',
                     success: function (response) {
-                       alert("Deleted - "+response)
+                       if(response == null){
+                           alert("University doesnt exist !")
+                       }
+                       else
+                       {
+                           alert("Delete Successful !")
+                       }
                     }
                 });
+
+                $("#universitySearch").val('')
             })
 
             $("#search").click(function () {
@@ -252,6 +262,8 @@
 
                     }
                 });
+
+                $("#universitySearch").val('')
 
             })
 

@@ -74,7 +74,7 @@ app.post('/',async function (req,res){
     try{
         const response = await university.save()
         console.log(response)
-        return res.render('main.html',response)
+        res.json(response)
     }
     catch(err){
         res.send('Error - '+ err)
@@ -83,15 +83,18 @@ app.post('/',async function (req,res){
 
 app.post('/deleteUniversity',async function(req,res){
 
+
+    console.log(req.body.name)
+
     University.findOneAndRemove({ 'name' : { '$regex' : req.body.name, '$options' : 'i' } },
         function (err, response) {
             if (err){
                 res.send('Error - '+ err)
             }
-            else{
-            
+            else{   
+            console.log(response)
             res.json(response)
-}
+    }
 });
 
 })
