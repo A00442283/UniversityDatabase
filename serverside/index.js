@@ -37,8 +37,7 @@ app.get('/getUniversities',async(req,res)=>{
 
     try{
         const universities = await University.find()
-        console.log("GET UNIVERSITIES")
-        console.log(universities)
+        console.log("GET UNIVERSITIES !")
         res.json(universities)
         //return res.render('main.html',{ data: universities })
     }
@@ -49,10 +48,11 @@ app.get('/getUniversities',async(req,res)=>{
 })
 
 app.post('/getUniversity',async function (req,res){
-    console.log("GET UNIVERSITY")
-    console.log(req.body.name)
+    console.log("GET UNIVERSITY !")
+    console.log(req.body)
     try{
         const response = await University.find({ 'name' : { '$regex' : req.body.name, '$options' : 'i' } })
+        console.log(response)
         res.json(response)
     }
     catch(err){
@@ -61,15 +61,13 @@ app.post('/getUniversity',async function (req,res){
 } )
 
 app.post('/',async function (req,res){
-    console.log("POST REQUEST CALLED SERVER SIDE")
-    console.log(req.body)
+    console.log("POST UNIVERSITY")
+
     const university = new University({
         name:req.body.name,
         address:req.body.address,
         phone:req.body.phone
     })
-
-    console.log(university)
 
     try{
         const response = await university.save()
@@ -83,17 +81,16 @@ app.post('/',async function (req,res){
 
 app.post('/deleteUniversity',async function(req,res){
 
-
-    console.log(req.body.name)
-
+    console.log("DELETE UNIVERSITY !")
+    console.log(req.body)
     University.findOneAndRemove({ 'name' : { '$regex' : req.body.name, '$options' : 'i' } },
         function (err, response) {
             if (err){
                 res.send('Error - '+ err)
             }
-            else{   
-            console.log(response)
-            res.json(response)
+            else{
+                console.log(response)   
+                res.json(response)
         }
     });
 
@@ -101,14 +98,12 @@ app.post('/deleteUniversity',async function(req,res){
 
 app.post('/updateUniversity', async function(req,res){
     console.log("UPDATE UNIVERSITY")
-    console.log(req.body)
     University.findOneAndUpdate({"name": req.body.name}, {$set: {"phone": req.body.phone, "address":req.body.address}},  
     function(err,response) {
         if(err){
             res.send("Error -"+err)
         }
         else{
-            console.log(response)
             res.json(response)
         }
     })
@@ -117,7 +112,7 @@ app.post('/updateUniversity', async function(req,res){
 
 
 
-mongoose.connect(mongoUrl,{useNewUrlParser:true})
+mongoose.connect(mongoUrl,{useNewUrlParser:true, useUnifiedTopology: true})
 const con = mongoose.connection
 
 con.on('open', function(){
