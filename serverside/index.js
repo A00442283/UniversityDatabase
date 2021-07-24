@@ -94,9 +94,24 @@ app.post('/deleteUniversity',async function(req,res){
             else{   
             console.log(response)
             res.json(response)
-    }
-});
+        }
+    });
 
+})
+
+app.post('/updateUniversity', async function(req,res){
+    console.log("UPDATE UNIVERSITY")
+    console.log(req.body)
+    University.findOneAndUpdate({"name": req.body.name}, {$set: {"phone": req.body.phone, "address":req.body.address}},  
+    function(err,response) {
+        if(err){
+            res.send("Error -"+err)
+        }
+        else{
+            console.log(response)
+            res.json(response)
+        }
+    })
 })
 
 

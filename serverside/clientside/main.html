@@ -48,7 +48,8 @@
             </div>
 
             <div class="btn-group" style="width:100%">
-                <input type="submit" id="save" class="btn btn-success" value="save" />
+                <input type="submit" id="save" class="btn btn-success" value="Save" />
+                <input type="submit" id="update" class="btn btn-primary ml-2" value="Update" />
             </div>
 
         </form>
@@ -146,6 +147,29 @@
 
 
             });
+
+            $("#update").click(function () {
+                validation();
+                var obj = {
+                    "name": $("#universityName").val(),
+                    "phone": $("#phoneNumber").val(),
+                    "address": $("#address").val()
+                }
+
+                $.post({
+                    traditional: true,
+                    url: 'http://dev.cs.smu.ca:8136/updateUniversity',
+                    contentType: 'application/json',
+                    data: JSON.stringify(obj),
+                    dataType: 'json',
+                    success: function (response) { alert("Successfully updated!") }
+                });
+                
+                $("#universityName").val('')
+                $("#phoneNumber").val('')
+                $("#address").val('')
+            })
+
 
             $("#displayRecords").click(function () {
 
