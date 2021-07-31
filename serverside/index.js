@@ -83,7 +83,7 @@ app.post('/deleteUniversity',async function(req,res){
 
     console.log("DELETE UNIVERSITY !")
     console.log(req.body)
-    University.findOneAndRemove({ 'name' : { '$regex' : req.body.name, '$options' : 'i' } },
+    University.findOneAndRemove({ 'name' : req.body.name} ,
         function (err, response) {
             if (err){
                 res.send('Error - '+ err)

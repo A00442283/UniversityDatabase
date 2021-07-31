@@ -126,7 +126,7 @@
             $("#save").click(function () {
                 //validation();
 
-                if (validation) {
+                if (validation()) {
                     var obj = {
                         "name": $("#universityName").val(),
                         "phone": $("#phoneNumber").val(),
@@ -159,7 +159,7 @@
 
             $("#update").click(function () {
                 //validation();
-                if (validation) {
+                if (validation()) {
                     var obj = {
                         "name": $("#universityName").val(),
                         "phone": $("#phoneNumber").val(),
@@ -172,7 +172,13 @@
                         contentType: 'application/json',
                         data: JSON.stringify(obj),
                         dataType: 'json',
-                        success: function (response) { alert("Successfully updated!") }
+                        success: function (response) { 
+                             if (response == null) {
+                                alert("University doesnt exist !")
+                            }
+                            else {
+                                alert("Update Successful !")
+                            } }
                     });
 
                     $("#universityName").val('')
@@ -245,8 +251,7 @@
 
             $("#search").click(function () {
                 //validationName()
-                console.log(validationName())
-
+               
                 if (validationName()) {
                     var obj = {
                         "name": $("#universitySearch").val()
