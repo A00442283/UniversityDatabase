@@ -57,10 +57,11 @@
 
         <form class="mt-5" onSubmit="return false">
             <div class="form-group">
-                <label for="universitySearch">Name</label>
+                <label for="universitySearch">Name</label><br>
+                <small class="text-primary">(For search enter the closest matching term and we will find for you)</small>
                 <input type="text" class="form-control" id="universitySearch" aria-describedby="emailHelp"
                     placeholder="Enter name of university">
-                <small id="universitySearchHelp" class="form-text text-muted" class="text-danger"></small>
+                <small id="universitySearchHelp" class="text-danger"></small>
             </div>
             <div class="btn-group" style="width:100%">
                 <input id="search" type="submit" class="btn btn-success" value="Search" />
@@ -172,13 +173,14 @@
                         contentType: 'application/json',
                         data: JSON.stringify(obj),
                         dataType: 'json',
-                        success: function (response) { 
-                             if (response == null) {
+                        success: function (response) {
+                            if (response == null) {
                                 alert("University doesnt exist !")
                             }
                             else {
                                 alert("Update Successful !")
-                            } }
+                            }
+                        }
                     });
 
                     $("#universityName").val('')
@@ -251,7 +253,7 @@
 
             $("#search").click(function () {
                 //validationName()
-               
+
                 if (validationName()) {
                     var obj = {
                         "name": $("#universitySearch").val()
@@ -263,18 +265,25 @@
                         data: JSON.stringify(obj),
                         dataType: 'json',
                         success: function (response) {
-                            data = response
-                            var tr = [];
-                            console.log(data)
-                            for (var i = 0; i < data.length; i++) {
-                                tr.push('<tr>');
-                                tr.push("<td>" + data[i].name + "</td>");
-                                tr.push("<td>" + data[i].address + "</td>");
-                                tr.push("<td>" + data[i].phone + "</td>");
-                                tr.push('</tr>');
+                            if (response == null) {
+                                alert("University doesnt exist !")
                             }
-                            $('#tableSearch').empty();
-                            $('#tableSearch').append($(tr.join('')));
+                            else {
+                                data = response
+                                var tr = [];
+                                console.log(data)
+                                for (var i = 0; i < data.length; i++) {
+                                    tr.push('<tr>');
+                                    tr.push("<td>" + data[i].name + "</td>");
+                                    tr.push("<td>" + data[i].address + "</td>");
+                                    tr.push("<td>" + data[i].phone + "</td>");
+                                    tr.push('</tr>');
+                                }
+                                $('#tableSearch').empty();
+                                $('#tableSearch').append($(tr.join('')));
+
+                            }
+
 
                         }
                     });
@@ -328,7 +337,7 @@
                     count = count + 1
                 }
 
-                if (count ==0 ) {
+                if (count == 0) {
                     return true
                 }
 
@@ -359,7 +368,7 @@
                 }
                 console.log(count)
 
-                if (count ==0 ) {
+                if (count == 0) {
                     return true
                 }
 
